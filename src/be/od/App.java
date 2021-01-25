@@ -18,7 +18,7 @@ public class App extends Canvas implements Runnable {
     }
 
     private App() {
-        new Window(1366, 768, "Audric \"OD\" Onockx", this);
+        new Window(1366, 800, "Audric \"OD\" Onockx", this);
         this.handler = new TileHandler(this);
         start();
         printText();
@@ -94,7 +94,22 @@ public class App extends Canvas implements Runnable {
     }
 
     public void printText() {
-        handler.printText("Bienvenue dans la matrice...", 60, 57, 5, 8);
+        TextPrinter text1 = new TextPrinter("Bienvenue dans la matrice...", 60, 57, Color.WHITE, handler);
+        text1.rndPrint(5, 6);
+        text1.rndDelete(15, 2);
+
+        TextPrinter text2 = new TextPrinter("Mon nom est ", 60, 57, Color.WHITE, handler);
+        text2.rndPrint(19, 4);
+        text2.rndDelete(30, 2);
+
+        TextPrinter audric = new TextPrinter("Audric", 72, 57, Color.RED, handler);
+        audric.print(23);
+        audric.delete(42);
+        audric.flash(32, 6, 1.5, Color.BLACK, Color.RED);
+
+        TextPrinter text3 = new TextPrinter("et ceci est mon univers.", 79, 57, Color.WHITE, handler);
+        text3.rndPrint(24, 2);
+        text3.rndDelete(32, 2);
     }
 
     public static int clamp(int value, int min, int max) {

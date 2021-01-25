@@ -3,6 +3,8 @@ package be.od;
 import java.awt.*;
 import java.time.Instant;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Tile {
 
@@ -11,60 +13,126 @@ public class Tile {
     private final int x;
     private final int y;
 
-    private Color color;
-    private char currentChar;
+    private final Color initialColor;
+    private Color currentColor;
+    private Color wantedColor;
 
+    private char currentChar;
     private char wantedChar;
-    private Instant showTime;
+
+    private boolean rndChar;
+    private boolean rndColor;
 
     public Tile(int x, int y, Color color) {
         this.x = x;
         this.y = y;
 
-        this.color = color;
+        this.initialColor = color;
+        this.currentColor = color;
+        this.wantedColor = color;
 
         this.wantedChar = (char) 1;
-        this.showTime = Instant.MAX;
+
+        this.rndChar = true;
+        this.rndColor = true;
     }
 
     public void tick() {
-        if(showTime.isAfter(Instant.now())) {
-            //tickShade();
+        if (rndChar) {
             tickChar();
         } else {
-            writeWantedChar();
+            this.currentChar = wantedChar;
+        }
+
+        if (rndColor) {
+            this.currentColor = initialColor;
+        } else {
+            this.currentColor = wantedColor;
         }
     }
 
     private void tickShade() {
-        int incr = random.nextBoolean() ? 1 : - 1;
-        int shade = App.clamp(color.getGreen() + incr, 0, 255);
-        color = new Color(0, shade, 0);
+        int incr = random.nextBoolean() ? 1 : -1;
+        int shade = App.clamp(currentColor.getGreen() + incr, 0, 255);
+        currentColor = new Color(0, shade, 0);
 
     }
 
     private void tickChar() {
         for (int i = 0; i < 6; i++) {
-            if(random.nextBoolean()) return;
+            if (random.nextBoolean()) return;
         }
         currentChar = (char) (33 + random.nextInt(89));
     }
 
     public void render(Graphics graphics) {
-        graphics.setColor(color);
+        graphics.setColor(currentColor);
         int side = TileHandler.getTileSide();
-        graphics.drawString(String.valueOf(currentChar), x + side, y + side);
+        graphics.drawString(String.valueOf(currentChar), x, y + side);
 //        graphics.fillRect(x, y, TileHandler.getTileSide(), TileHandler.getTileSide());
     }
 
-    public void setWantedChar(char wantedChar, int timer) {
-        if (wantedChar == ' ') return;
+    public void set(char wantedChar, Color color) {
+        this.wantedColor = color;
         this.wantedChar = wantedChar;
-        this.showTime = Instant.now().plusMillis(timer);
+
+        rndChar = false;
+        rndColor = false;
     }
 
-    public void writeWantedChar() {
-        this.currentChar = wantedChar;
-        this.color = Color.WHITE;
+
+    public void set(char wantedChar, Color color, int timer) {
+        this.wantedColor = color;
+        this.wantedChar = wantedChar;
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                rndChar = false;
+                rndColor = false;
+            }
+        };
+        new Timer().schedule(task, timer);
+    }
+
+    public void setColor(Color color, int timer) {
+        this.wantedColor = color;
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                rndColor = false;
+            }
+        };
+        new Timer().schedule(task, timer);
+    }
+
+    public void setColor(Color color) {
+        setColor(color, 0);
+    }
+
+    public void setChar(char wantedChar, int timer) {
+        this.wantedChar = wantedChar;
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                rndChar = false;
+            }
+        };
+        new Timer().schedule(task, timer);
+    }
+
+    public void reset(int timer) {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                rndChar = true;
+                rndColor = true;
+            }
+        };
+        new Timer().schedule(task, random.nextInt(timer));
+    }
+
+    public void reset() {
+        rndChar = true;
+        rndColor = true;
     }
 }

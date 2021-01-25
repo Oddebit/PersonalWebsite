@@ -55,7 +55,6 @@ public class ThemePixer {
             return scaledImg;
 
         } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }

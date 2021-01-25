@@ -55,22 +55,11 @@ public class TileHandler {
         }
     }
 
-    public void printText(String text, int x, int y, int timing, int timer) {
-        Thread textPrinter = new TextPrinter(text, x, y, timing, timer, this);
-        textPrinter.start();
-    }
-
-    public void printText(String text, int x, int y, int timer) {
-        Random random = new Random();
-        char[] textArray = text.toCharArray();
-        for (int i = 0; i < text.length(); i++) {
-            tiles[x + i][y].setWantedChar(textArray[i], random.nextInt(timer));
-        }
+    public Tile[][] getTiles() {
+        return tiles;
     }
 
     public static int getTileSide() {
         return tileSide;
     }
-
-
 }
