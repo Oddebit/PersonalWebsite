@@ -2,6 +2,10 @@ package be.od;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class App extends Canvas implements Runnable {
 
@@ -14,7 +18,7 @@ public class App extends Canvas implements Runnable {
     }
 
     private App() {
-        new Window(1500, 1000, "Audric \"OD\" Onockx", this);
+        new Window(1366, 768, "Audric \"OD\" Onockx", this);
         this.handler = new TileHandler(this);
         start();
         printText();
@@ -74,7 +78,7 @@ public class App extends Canvas implements Runnable {
 
     private void render() {
         BufferStrategy bufferStrategy = this.getBufferStrategy();
-        if(bufferStrategy == null) {
+        if (bufferStrategy == null) {
             this.createBufferStrategy(3);
             return;
         }
@@ -82,7 +86,7 @@ public class App extends Canvas implements Runnable {
 
         graphics.setColor(Color.black);
         graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
-        graphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, handler.getTileSide()));
+        graphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, TileHandler.getTileSide()));
         handler.render(graphics);
 
         graphics.dispose();
@@ -90,13 +94,12 @@ public class App extends Canvas implements Runnable {
     }
 
     public void printText() {
-        handler.printText("Bienvenue dans la matrice...", 5, 35, 2, 5);
-
+        handler.printText("Bienvenue dans la matrice...", 60, 57, 5, 8);
     }
 
     public static int clamp(int value, int min, int max) {
-        if(value < min) return min;
-        if(value > max) return max;
+        if (value < min) return min;
+        if (value > max) return max;
         return value;
     }
 }

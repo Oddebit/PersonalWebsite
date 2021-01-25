@@ -32,14 +32,15 @@ public class TextPrinter extends Thread {
 
     @Override
     public void run() {
-//        if (showTime.isAfter(Instant.now())) return;
-            handler.printText(text, x, y, timer);
+        while (showTime.isAfter(Instant.now())) { }
+
+        handler.printText(text, x, y, timer);
+
         try {
             join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
 }

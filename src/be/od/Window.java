@@ -2,6 +2,8 @@ package be.od;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class Window extends Canvas {
 
@@ -16,6 +18,11 @@ public class Window extends Canvas {
         frame.add(app);
         frame.setVisible(true);
         frame.requestFocus();
-    }
 
+        frame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent componentEvent) {
+                ThemePixer.getPixTheme(app);
+            }
+        });
+    }
 }

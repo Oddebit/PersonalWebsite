@@ -17,12 +17,11 @@ public class Tile {
     private char wantedChar;
     private Instant showTime;
 
-    public Tile(int x, int y) {
+    public Tile(int x, int y, Color color) {
         this.x = x;
         this.y = y;
 
-        int shade = new Random().nextInt(120);
-        this.color = new Color(0, shade, 0);
+        this.color = color;
 
         this.wantedChar = (char) 1;
         this.showTime = Instant.MAX;
@@ -30,7 +29,7 @@ public class Tile {
 
     public void tick() {
         if(showTime.isAfter(Instant.now())) {
-            tickShade();
+            //tickShade();
             tickChar();
         } else {
             writeWantedChar();
@@ -38,18 +37,24 @@ public class Tile {
     }
 
     private void tickShade() {
-        int incr = random.nextInt(20) * (random.nextBoolean() ? 1 : - 1);
+        int incr = random.nextBoolean() ? 1 : - 1;
         int shade = App.clamp(color.getGreen() + incr, 0, 255);
         color = new Color(0, shade, 0);
+
     }
 
     private void tickChar() {
+        for (int i = 0; i < 6; i++) {
+            if(random.nextBoolean()) return;
+        }
         currentChar = (char) (33 + random.nextInt(89));
     }
 
     public void render(Graphics graphics) {
         graphics.setColor(color);
-        graphics.drawString(String.valueOf(currentChar), x, y);
+        int side = TileHandler.getTileSide();
+        graphics.drawString(String.valueOf(currentChar), x + side, y + side);
+//        graphics.fillRect(x, y, TileHandler.getTileSide(), TileHandler.getTileSide());
     }
 
     public void setWantedChar(char wantedChar, int timer) {
